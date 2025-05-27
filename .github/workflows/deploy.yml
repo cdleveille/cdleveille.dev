@@ -39,7 +39,7 @@ jobs:
         Type=simple
         User=pi
         WorkingDirectory=$APP_DIR
-        ExecStart=$(which bun) start
+        ExecStart=bun start
         Restart=on-failure
 
         [Install]
