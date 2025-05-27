@@ -25,12 +25,12 @@ jobs:
 
     - name: Install dependencies and build project
       run: |
+        cd $APP_DIR
         bun install --ignore-scripts --frozen-lockfile
         bun run build
 
     - name: Install/update systemd service to run app
       run: |
-        BUN_PATH=$(which bun)
         cat > /tmp/$APP_NAME.service << EOF
         [Unit]
         Description=$APP_NAME
@@ -40,7 +40,7 @@ jobs:
         Type=simple
         User=pi
         WorkingDirectory=$APP_DIR
-        ExecStart=${BUN_PATH} start
+        ExecStart=$(which bun) start
         Restart=on-failure
 
         [Install]
