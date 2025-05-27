@@ -28,7 +28,6 @@ jobs:
         cd $APP_DIR
         bun install --ignore-scripts --frozen-lockfile
         bun run build
-        cp src/logo.svg dist/logo.svg
 
     - name: Install/update systemd service to run app
       run: |

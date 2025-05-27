@@ -10,8 +10,9 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "check": "biome check .",
+    "cp": "cp ./src/favicon.ico ./dist/favicon.ico",
     "dev": "bun --hot src/index.tsx",
-    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*' && bun run cp",
     "start": "NODE_ENV=production bun src/index.tsx"
   },
   "dependencies": {
