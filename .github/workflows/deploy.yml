@@ -1,0 +1,52 @@
+name: deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: Raspberry Pi 5
+    env:
+      APP_NAME: cdleveille.dev
+      APP_DIR: /home/pi/apps/cdleveille.dev
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Copy files to app directory
+      run: |
+        rm -rf $APP_DIR && mkdir $APP_DIR
+        cp -r . $APP_DIR
+
+    - name: Install dependencies and build project
+      run: |
+        bun install --ignore-scripts --frozen-lockfile
+        bun run build
+
+    - name: Install/update systemd service to run app
+      run: |
+        cat > /tmp/$APP_NAME.service << EOF
+        [Unit]
+        Description=$APP_NAME
+        After=network.target
+
+        [Service]
+        Type=simple
+        User=pi
+        WorkingDirectory=$APP_DIR
+        ExecStart=cd $APP_DIR && bun start
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        sudo mv /tmp/$APP_NAME.service /etc/systemd/system/
+        sudo systemctl daemon-reload
+        sudo systemctl enable $APP_NAME.service
+        sudo systemctl restart $APP_NAME.service
+        sudo systemctl status $APP_NAME.service
