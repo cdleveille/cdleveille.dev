@@ -30,6 +30,7 @@ jobs:
 
     - name: Install/update systemd service to run app
       run: |
+        BUN_PATH=$(which bun)
         cat > /tmp/$APP_NAME.service << EOF
         [Unit]
         Description=$APP_NAME
@@ -39,7 +40,7 @@ jobs:
         Type=simple
         User=pi
         WorkingDirectory=$APP_DIR
-        ExecStart=bun start
+        ExecStart=${BUN_PATH} start
         Restart=on-failure
 
         [Install]
